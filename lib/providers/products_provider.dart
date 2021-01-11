@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import './product.dart';
+import './product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
-  List<Product> _products = [
-    Product(
+  List<ProductProvider> _products = [
+    ProductProvider(
       id: 1,
       title: 'Red Shirt',
       description: 'A red shirt - it is pretty red!',
@@ -11,7 +11,7 @@ class ProductsProvider with ChangeNotifier {
       imageUrl:
           'https://5.imimg.com/data5/XP/PH/MY-57047128/round-neck-t-shirt-500x500.jpg',
     ),
-    Product(
+    ProductProvider(
       id: 2,
       title: 'Trousers',
       description: 'A nice pair of trousers.',
@@ -19,7 +19,7 @@ class ProductsProvider with ChangeNotifier {
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
     ),
-    Product(
+    ProductProvider(
       id: 3,
       title: 'Yellow Scarf',
       description: 'Warm and cozy - exactly what you need for the winter.',
@@ -27,7 +27,7 @@ class ProductsProvider with ChangeNotifier {
       imageUrl:
           'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
     ),
-    Product(
+    ProductProvider(
       id: 4,
       title: 'A Pan',
       description: 'Prepare any meal you want.',
@@ -37,16 +37,16 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
-  List<Product> get products => [..._products];
+  List<ProductProvider> get products => [..._products];
 
   void addProduct(
-    Product product,
+    ProductProvider product,
   ) {
     _products.add(product);
     notifyListeners();
   }
 
-  Product findById(int id) => _products.firstWhere(
+  ProductProvider findById(int id) => _products.firstWhere(
         (product) => product.id == id,
       );
 }

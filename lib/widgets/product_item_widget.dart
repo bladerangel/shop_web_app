@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/product_detail_screen.dart';
-import '../providers/product.dart';
+import '../providers/product_provider.dart';
 
 class ProductItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = context.watch<Product>();
+    final product = Provider.of<ProductProvider>(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: GridTile(
