@@ -49,7 +49,7 @@ class ProductsScreen extends StatelessWidget {
       body: GridView.builder(
         padding: EdgeInsets.all(10.0),
         itemCount: products.length,
-        itemBuilder: (_, index) => ProductItemWidget(
+        itemBuilder: (ctx, index) => ProductItemWidget(
           product: products[index],
         ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
