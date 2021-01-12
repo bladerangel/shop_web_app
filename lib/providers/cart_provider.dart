@@ -14,6 +14,12 @@ class CartItem {
 }
 
 class CartProvider with ChangeNotifier {
+  CartProvider copy() {
+    CartProvider cartProvider = CartProvider();
+    cartProvider._items = items;
+    return cartProvider;
+  }
+
   List<CartItem> _items = [];
 
   List<CartItem> get items => [..._items];
