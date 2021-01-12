@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_web_app/providers/cart_provider.dart';
+import '../widgets/badge_widget.dart';
 import '../widgets/products_grid_widget.dart';
 
 enum MenuOptions {
@@ -50,6 +53,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 }
               });
             },
+          ),
+          Consumer<CartProvider>(
+            builder: (ctx, cart, child) => BadgeWidget(
+              child: child,
+              value: cart.itemCount.toString(),
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
+              onPressed: () {},
+            ),
           ),
         ],
       ),
