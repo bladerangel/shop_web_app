@@ -52,4 +52,9 @@ class CartProvider with ChangeNotifier {
     _items.remove(cartItem);
     notifyListeners();
   }
+
+  void clear() {
+    _items = [];
+    notifyListeners();
+  }
 }
