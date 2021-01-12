@@ -37,16 +37,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ],
             onSelected: (value) {
-              switch (value) {
-                case MenuOptions.Favorites:
-                  _showOnlyFavorites = true;
-                  break;
-                case MenuOptions.All:
-                  _showOnlyFavorites = false;
-                  break;
-                default:
-                  break;
-              }
+              setState(() {
+                switch (value) {
+                  case MenuOptions.Favorites:
+                    _showOnlyFavorites = true;
+                    break;
+                  case MenuOptions.All:
+                    _showOnlyFavorites = false;
+                    break;
+                  default:
+                    break;
+                }
+              });
             },
           ),
         ],
