@@ -20,6 +20,11 @@ class CartProvider with ChangeNotifier {
 
   int get itemCount => _items.length;
 
+  double get totalAmount => _items.values.fold(
+      0.0,
+      (previous, current) =>
+          previous + current.product.price * current.quantity);
+
   void addItem(ProductProvider product) {
     if (_items.containsKey(product.id)) {
       _items.update(
