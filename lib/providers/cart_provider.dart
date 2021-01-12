@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:shop_web_app/providers/product_provider.dart';
+import './product_provider.dart';
 
 class CartItem {
   final int id;
