@@ -34,14 +34,7 @@ class CartProvider with ChangeNotifier {
   void addItem(ProductProvider product) {
     int index = _items.indexWhere((item) => item.product == product);
 
-    if (index != -1) {
-      final item = _items[index];
-      _items[index] = CartItem(
-        id: item.id,
-        product: item.product,
-        quantity: item.quantity + 1,
-      );
-    } else {
+    if (index == -1) {
       _items.add(
         CartItem(
           id: DateTime.now().millisecondsSinceEpoch,
@@ -49,6 +42,33 @@ class CartProvider with ChangeNotifier {
           quantity: 1,
         ),
       );
+    } else {
+      final item = _items[index];
+      _items[index] = CartItem(
+        id: item.id,
+        product: item.product,
+        quantity: item.quantity + 1,
+      );
+    }
+
+    notifyListeners();
+  }
+
+  void undoAddItem(ProductProvider product) {
+    int index = _items.indexWhere((item) => item.product == product);
+    if (index == -1) {
+      return;
+    }
+
+    final item = _items[index];
+    if (_items[index].quantity > 1) {
+      _items[index] = CartItem(
+        id: item.id,
+        product: item.product,
+        quantity: item.quantity - 1,
+      );
+    } else {
+      _items.remove(item);
     }
 
     notifyListeners();

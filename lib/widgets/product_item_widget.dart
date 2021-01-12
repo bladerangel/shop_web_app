@@ -12,7 +12,7 @@ class ProductItemWidget extends StatelessWidget {
       context,
       listen: false,
     );
-    final cart = Provider.of<CartProvider>(
+    final cartProvider = Provider.of<CartProvider>(
       context,
       listen: false,
     );
@@ -46,7 +46,24 @@ class ProductItemWidget extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () => cart.addItem(product),
+            onPressed: () {
+              cartProvider.addItem(product);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Added product to cart!',
+                  ),
+                  duration: Duration(
+                    seconds: 2,
+                  ),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () => cartProvider.undoAddItem(product),
+                  ),
+                ),
+              );
+            },
             color: Theme.of(context).accentColor,
           ),
         ),
