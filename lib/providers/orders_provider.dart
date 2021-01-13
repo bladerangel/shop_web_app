@@ -11,6 +11,17 @@ class OrderItem {
     @required this.cart,
     @required this.dateTime,
   });
+
+  OrderItem copy({
+    int id,
+    CartProvider cart,
+    DateTime dateTime,
+  }) =>
+      OrderItem(
+        id: id ?? this.id,
+        cart: cart ?? this.cart,
+        dateTime: dateTime ?? this.dateTime,
+      );
 }
 
 class OrdersProvider with ChangeNotifier {
@@ -21,7 +32,7 @@ class OrdersProvider with ChangeNotifier {
     _orders.insert(
       0,
       OrderItem(
-        id: DateTime.now().microsecondsSinceEpoch,
+        id: DateTime.now().millisecondsSinceEpoch,
         cart: cart,
         dateTime: DateTime.now(),
       ),

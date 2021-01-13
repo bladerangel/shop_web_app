@@ -11,6 +11,17 @@ class CartItem {
     @required this.product,
     @required this.quantity,
   });
+
+  CartItem copy({
+    int id,
+    ProductProvider product,
+    int quantity,
+  }) =>
+      CartItem(
+        id: id ?? this.id,
+        product: product ?? this.product,
+        quantity: quantity ?? this.quantity,
+      );
 }
 
 class CartProvider with ChangeNotifier {
@@ -43,12 +54,7 @@ class CartProvider with ChangeNotifier {
         ),
       );
     } else {
-      final item = _items[index];
-      _items[index] = CartItem(
-        id: item.id,
-        product: item.product,
-        quantity: item.quantity + 1,
-      );
+      _items[index] = _items[index].copy(quantity: _items[index].quantity + 1);
     }
 
     notifyListeners();
@@ -60,15 +66,10 @@ class CartProvider with ChangeNotifier {
       return;
     }
 
-    final item = _items[index];
     if (_items[index].quantity > 1) {
-      _items[index] = CartItem(
-        id: item.id,
-        product: item.product,
-        quantity: item.quantity - 1,
-      );
+      _items[index] = _items[index].copy(quantity: _items[index].quantity - 1);
     } else {
-      _items.remove(item);
+      _items.remove(_items[index]);
     }
 
     notifyListeners();

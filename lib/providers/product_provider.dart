@@ -17,6 +17,23 @@ class ProductProvider with ChangeNotifier {
     this.isFavorite = false,
   });
 
+  ProductProvider copy({
+    int id,
+    String title,
+    String description,
+    double price,
+    String imageUrl,
+    bool isFavorite,
+  }) =>
+      ProductProvider(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        price: price ?? this.price,
+        imageUrl: imageUrl ?? this.imageUrl,
+        isFavorite: isFavorite ?? this.isFavorite,
+      );
+
   void toogleFavorite() {
     isFavorite = !isFavorite;
     notifyListeners();

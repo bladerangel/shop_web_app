@@ -48,11 +48,24 @@ class ProductsProvider with ChangeNotifier {
   void addProduct(
     ProductProvider product,
   ) {
-    _products.add(product);
+    ProductProvider newProduct =
+        product.copy(id: DateTime.now().millisecondsSinceEpoch);
+    _products.add(newProduct);
     notifyListeners();
   }
 
-  ProductProvider findById(int id) => _products.firstWhere(
-        (product) => product.id == id,
-      );
+  updateProduct(
+    ProductProvider product,
+  ) {
+    int index = _products.indexWhere((product) => product == product);
+    _products[index] = product;
+    notifyListeners();
+  }
+
+  deleteProduct(
+    ProductProvider product,
+  ) {
+    _products.remove(product);
+    notifyListeners();
+  }
 }
