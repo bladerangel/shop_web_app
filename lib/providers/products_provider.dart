@@ -50,11 +50,12 @@ class ProductsProvider with ChangeNotifier {
       )
       .toList();
 
-  void addProduct(
+  Future<void> addProduct(
     ProductProvider product,
   ) async {
     await dio.post(_url, data: product.toJson());
     notifyListeners();
+    return Future.value();
   }
 
   updateProduct(
