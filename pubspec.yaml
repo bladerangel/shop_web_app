@@ -31,6 +31,8 @@ dependencies:
   provider: ^4.3.2+3
   intl: ^0.16.1
   dio: ^3.0.10
+  json_serializable: ^3.5.1
+  build_runner: ^1.10.12
 
 dev_dependencies:
   flutter_test:
