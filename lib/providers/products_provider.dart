@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import './product_provider.dart';
 
@@ -37,6 +38,10 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];
 
+  Dio dio = Dio();
+
+  final _url = 'http://localhost:8080/product';
+
   List<ProductProvider> get products => [..._products];
 
   List<ProductProvider> get favoriteProducts => _products
@@ -47,10 +52,8 @@ class ProductsProvider with ChangeNotifier {
 
   void addProduct(
     ProductProvider product,
-  ) {
-    ProductProvider newProduct =
-        product.copy(id: DateTime.now().millisecondsSinceEpoch);
-    _products.add(newProduct);
+  ) async {
+    await dio.post(_url, data: product.toJson());
     notifyListeners();
   }
 

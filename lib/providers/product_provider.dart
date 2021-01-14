@@ -1,5 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'product_provider.g.dart';
+
+@JsonSerializable()
 class ProductProvider with ChangeNotifier {
   final int id;
   final String title;
@@ -33,6 +37,10 @@ class ProductProvider with ChangeNotifier {
         imageUrl: imageUrl ?? this.imageUrl,
         isFavorite: isFavorite ?? this.isFavorite,
       );
+
+  factory ProductProvider.fromJson(Map<String, dynamic> json) =>
+      _$ProductProviderFromJson(json);
+  Map<String, dynamic> toJson() => _$ProductProviderToJson(this);
 
   void toogleFavorite() {
     isFavorite = !isFavorite;
