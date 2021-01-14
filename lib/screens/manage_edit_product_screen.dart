@@ -83,7 +83,7 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
     setState(() {});
   }
 
-  void _saveForm() async {
+  Future<void> _saveForm() async {
     if (!_form.currentState.validate()) {
       return;
     }
@@ -100,9 +100,8 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
         final ProductsProvider productsProvider =
             Provider.of<ProductsProvider>(context, listen: false);
         await productsProvider.addProduct(_editProduct);
-        _closeLoading();
       } on DioError catch (error) {
-        showDialog(
+        await showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
                   title: Text(
@@ -114,13 +113,12 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
                   actions: [
                     FlatButton(
                       child: Text('Ok'),
-                      onPressed: () {
-                        Navigator.of(ctx).pop();
-                        _closeLoading();
-                      },
+                      onPressed: () => Navigator.of(ctx).pop(),
                     ),
                   ],
                 ));
+      } finally {
+        _closeLoading();
       }
     }
   }

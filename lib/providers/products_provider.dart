@@ -54,9 +54,8 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await dio.post(_url, data: {});
+      await dio.post(_url, data: product.toJson());
       notifyListeners();
-      return Future.value();
     } catch (error) {
       throw error;
     }
