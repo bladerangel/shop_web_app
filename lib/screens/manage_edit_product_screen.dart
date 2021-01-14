@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
@@ -57,6 +58,19 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
     super.dispose();
   }
 
+  void _openLoading() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void _closeLoading() {
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
+  }
+
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus &&
         ((!_imageUrlController.text.startsWith('http') &&
@@ -74,26 +88,40 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
       return;
     }
     _form.currentState.save();
-    setState(() {
-      _isLoading = true;
-    });
+    _openLoading();
 
     if (_editProduct.id != null) {
       final ProductsProvider productsProvider =
           Provider.of<ProductsProvider>(context, listen: false);
       productsProvider.updateProduct(_editProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+      _closeLoading();
     } else {
-      final ProductsProvider productsProvider =
-          Provider.of<ProductsProvider>(context, listen: false);
-      await productsProvider.addProduct(_editProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+      try {
+        final ProductsProvider productsProvider =
+            Provider.of<ProductsProvider>(context, listen: false);
+        await productsProvider.addProduct(_editProduct);
+        _closeLoading();
+      } on DioError catch (error) {
+        showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text(
+                    'An error occurred!',
+                  ),
+                  content: Text(
+                    error.message,
+                  ),
+                  actions: [
+                    FlatButton(
+                      child: Text('Ok'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        _closeLoading();
+                      },
+                    ),
+                  ],
+                ));
+      }
     }
   }
 
