@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/loading_widget.dart';
+import '../providers/products_provider.dart';
 import '../widgets/drawer_widget.dart';
 import '../providers/cart_provider.dart';
 import '../screens/cart_screen.dart';
@@ -18,6 +20,18 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   bool _showOnlyFavorites = false;
+  final _loading = GlobalKey<LoadingWidgetState>();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _loading.currentState.showLoading();
+      await Provider.of<ProductsProvider>(context, listen: false)
+          .fetchProducts();
+      _loading.currentState.closeLoading();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +87,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ],
       ),
       drawer: DrawerWidget(),
-      body: ProductsGridWidget(showOnlyFavorites: _showOnlyFavorites),
+      body: LoadingWidget(
+        key: _loading,
+        child: ProductsGridWidget(
+          showOnlyFavorites: _showOnlyFavorites,
+        ),
+      ),
     );
   }
 }

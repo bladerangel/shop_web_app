@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import './product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
-  List<ProductProvider> _products = [
+  List<ProductProvider> _products = [];
+  /* [
     ProductProvider(
       id: 1,
       title: 'Red Shirt',
@@ -36,7 +37,7 @@ class ProductsProvider with ChangeNotifier {
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     ),
-  ];
+  ];*/
 
   Dio dio = Dio();
 
@@ -50,29 +51,40 @@ class ProductsProvider with ChangeNotifier {
       )
       .toList();
 
-  Future<void> addProduct(
-    ProductProvider product,
-  ) async {
+  Future<void> fetchProducts() async {
     try {
-      await dio.post(_url, data: product.toJson());
+      final response = await dio.get(_url);
+      final List<dynamic> data = response.data;
+      _products =
+          data.map((product) => ProductProvider.fromJson(product)).toList();
       notifyListeners();
     } catch (error) {
       throw error;
     }
   }
 
-  updateProduct(
+  Future<void> addProduct(
     ProductProvider product,
-  ) {
-    int index = _products.indexWhere((product) => product == product);
-    _products[index] = product;
-    notifyListeners();
+  ) async {
+    try {
+      await dio.post(_url, data: product.toJson());
+      await fetchProducts();
+    } catch (error) {
+      throw error;
+    }
   }
 
-  deleteProduct(
+  Future<void> updateProduct(
     ProductProvider product,
-  ) {
-    _products.remove(product);
-    notifyListeners();
+  ) async {
+    await dio.put('$_url/${product.id}', data: product.toJson());
+    await fetchProducts();
+  }
+
+  Future<void> deleteProduct(
+    ProductProvider product,
+  ) async {
+    await dio.delete('$_url/${product.id}');
+    await fetchProducts();
   }
 }

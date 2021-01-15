@@ -1,49 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './loading_widget.dart';
 import '../providers/products_provider.dart';
 import '../providers/product_provider.dart';
 import '../screens/manage_edit_product_screen.dart';
 
-class ManageProductWidget extends StatelessWidget {
+class ManageProductWidget extends StatefulWidget {
   final ProductProvider product;
 
   const ManageProductWidget({
     Key key,
     @required this.product,
   }) : super(key: key);
+
+  @override
+  _ManageProductWidgetState createState() => _ManageProductWidgetState();
+}
+
+class _ManageProductWidgetState extends State<ManageProductWidget> {
+  final _loading = GlobalKey<LoadingWidgetState>();
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        product.title,
-      ),
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(
-          product.imageUrl,
+    return LoadingWidget(
+      key: _loading,
+      child: ListTile(
+        title: Text(
+          widget.product.title,
         ),
-      ),
-      trailing: Container(
-        width: 100,
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () => Navigator.of(context).pushNamed(
-                ManageEditProductScreen.route,
-                arguments: product,
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(
+            widget.product.imageUrl,
+          ),
+        ),
+        trailing: Container(
+          width: 100,
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () => Navigator.of(context).pushNamed(
+                  ManageEditProductScreen.route,
+                  arguments: widget.product,
+                ),
+                color: Theme.of(context).primaryColor,
               ),
-              color: Theme.of(context).primaryColor,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                final ProductsProvider productsProvider =
-                    Provider.of<ProductsProvider>(context, listen: false);
-                productsProvider.deleteProduct(product);
-              },
-              color: Theme.of(context).errorColor,
-            ),
-          ],
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () async {
+                  _loading.currentState.showLoading();
+                  final ProductsProvider productsProvider =
+                      Provider.of<ProductsProvider>(context, listen: false);
+                  await productsProvider.deleteProduct(widget.product);
+                  _loading.currentState.closeLoading();
+                },
+                color: Theme.of(context).errorColor,
+              ),
+            ],
+          ),
         ),
       ),
     );
