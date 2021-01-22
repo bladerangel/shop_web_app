@@ -25,17 +25,20 @@ class ManageProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: DrawerWidget(),
-      body: Padding(
-        padding: EdgeInsets.all(8),
-        child: ListView.builder(
-          itemCount: productsProvider.products.length,
-          itemBuilder: (ctx, index) => Column(
-            children: [
-              ManageProductWidget(
-                product: productsProvider.products[index],
-              ),
-              Divider(),
-            ],
+      body: RefreshIndicator(
+        onRefresh: productsProvider.fetchProducts,
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: ListView.builder(
+            itemCount: productsProvider.products.length,
+            itemBuilder: (ctx, index) => Column(
+              children: [
+                ManageProductWidget(
+                  product: productsProvider.products[index],
+                ),
+                Divider(),
+              ],
+            ),
           ),
         ),
       ),

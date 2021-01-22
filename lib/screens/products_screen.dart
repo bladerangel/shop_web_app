@@ -25,6 +25,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         _loading.currentState.showLoading();
@@ -36,7 +37,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
         _loading.currentState.closeLoading();
       }
     });
-    super.initState();
   }
 
   @override
