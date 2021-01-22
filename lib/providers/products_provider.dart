@@ -41,7 +41,7 @@ class ProductsProvider with ChangeNotifier {
 
   Dio dio = Dio();
 
-  final _url = 'http://localhost:8080/producta';
+  final _url = 'http://localhost:8080/product';
 
   List<ProductProvider> get products => [..._products];
 
