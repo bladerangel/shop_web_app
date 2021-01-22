@@ -33,10 +33,20 @@ class LoadingWidgetState extends State<LoadingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Center(
+    return Stack(
+      children: [
+        Opacity(
+          opacity: _isLoading ? 0.5 : 1,
+          child: AbsorbPointer(
+            absorbing: _isLoading,
+            child: widget.child,
+          ),
+        ),
+        if (_isLoading)
+          Center(
             child: CircularProgressIndicator(),
-          )
-        : widget.child;
+          ),
+      ],
+    );
   }
 }
