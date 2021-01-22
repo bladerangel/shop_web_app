@@ -41,7 +41,7 @@ class ProductsProvider with ChangeNotifier {
 
   Dio dio = Dio();
 
-  final _url = 'http://localhost:8080/product';
+  final _url = 'http://localhost:8080/producta';
 
   List<ProductProvider> get products => [..._products];
 
@@ -77,14 +77,22 @@ class ProductsProvider with ChangeNotifier {
   Future<void> updateProduct(
     ProductProvider product,
   ) async {
-    await dio.put('$_url/${product.id}', data: product.toJson());
-    await fetchProducts();
+    try {
+      await dio.put('$_url/${product.id}', data: product.toJson());
+      await fetchProducts();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<void> deleteProduct(
     ProductProvider product,
   ) async {
-    await dio.delete('$_url/${product.id}');
-    await fetchProducts();
+    try {
+      await dio.delete('$_url/${product.id}');
+      await fetchProducts();
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/dialog_widget.dart' as DialogWidget;
 import './loading_widget.dart';
 import '../providers/products_provider.dart';
 import '../providers/product_provider.dart';
@@ -48,11 +49,17 @@ class _ManageProductWidgetState extends State<ManageProductWidget> {
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () async {
-                  _loading.currentState.showLoading();
-                  final ProductsProvider productsProvider =
-                      Provider.of<ProductsProvider>(context, listen: false);
-                  await productsProvider.deleteProduct(widget.product);
-                  _loading.currentState.closeLoading();
+                  try {
+                    _loading.currentState.showLoading();
+                    final ProductsProvider productsProvider =
+                        Provider.of<ProductsProvider>(context, listen: false);
+                    await productsProvider.deleteProduct(widget.product);
+                  } catch (error) {
+                    DialogWidget.showErrorDialog(
+                        error: error, context: context);
+                  } finally {
+                    _loading.currentState.closeLoading();
+                  }
                 },
                 color: Theme.of(context).errorColor,
               ),

@@ -1,7 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import '../widgets/dialog_widget.dart' as DialogWidget;
 import '../widgets/loading_widget.dart';
 import '../providers/product_provider.dart';
 import '../providers/products_provider.dart';
@@ -80,33 +80,23 @@ class _ManageEditProductScreenState extends State<ManageEditProductScreen> {
     _loading.currentState.showLoading();
 
     if (_editProduct.id != null) {
-      final ProductsProvider productsProvider =
-          Provider.of<ProductsProvider>(context, listen: false);
-      await productsProvider.updateProduct(_editProduct);
-      _loading.currentState.closeLoading();
-      Navigator.of(context).pop();
+      try {
+        final ProductsProvider productsProvider =
+            Provider.of<ProductsProvider>(context, listen: false);
+        await productsProvider.updateProduct(_editProduct);
+      } catch (error) {
+        DialogWidget.showErrorDialog(error: error, context: context);
+      } finally {
+        _loading.currentState.closeLoading();
+        Navigator.of(context).pop();
+      }
     } else {
       try {
         final ProductsProvider productsProvider =
             Provider.of<ProductsProvider>(context, listen: false);
         await productsProvider.addProduct(_editProduct);
-      } on DioError catch (error) {
-        await showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-                  title: Text(
-                    'An error occurred!',
-                  ),
-                  content: Text(
-                    error.message,
-                  ),
-                  actions: [
-                    FlatButton(
-                      child: Text('Ok'),
-                      onPressed: () => Navigator.of(ctx).pop(),
-                    ),
-                  ],
-                ));
+      } catch (error) {
+        DialogWidget.showErrorDialog(error: error, context: context);
       } finally {
         _loading.currentState.closeLoading();
         Navigator.of(context).pop();

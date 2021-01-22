@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/dialog_widget.dart' as DialogWidget;
 import '../widgets/loading_widget.dart';
 import '../providers/products_provider.dart';
 import '../widgets/drawer_widget.dart';
@@ -25,10 +26,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _loading.currentState.showLoading();
-      await Provider.of<ProductsProvider>(context, listen: false)
-          .fetchProducts();
-      _loading.currentState.closeLoading();
+      try {
+        _loading.currentState.showLoading();
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .fetchProducts();
+      } catch (error) {
+        DialogWidget.showErrorDialog(error: error, context: context);
+      } finally {
+        _loading.currentState.closeLoading();
+      }
     });
     super.initState();
   }
