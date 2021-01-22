@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -42,8 +43,20 @@ class ProductProvider with ChangeNotifier {
       _$ProductProviderFromJson(json);
   Map<String, dynamic> toJson() => _$ProductProviderToJson(this);
 
-  void toogleFavorite() {
-    isFavorite = !isFavorite;
-    notifyListeners();
+  Dio dio = Dio();
+
+  final _url = 'http://localhost:8080/product';
+
+  Future<void> toogleFavorite() async {
+    try {
+      final updatedProduct = this.copy(isFavorite: !isFavorite);
+      final response =
+          await dio.put('$_url/$id', data: updatedProduct.toJson());
+      final product = ProductProvider.fromJson(response.data);
+      isFavorite = product.isFavorite;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }

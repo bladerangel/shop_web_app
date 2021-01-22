@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
-
+import '../widgets/dialog_widget.dart' as DialogWidget;
 import '../screens/product_detail_screen.dart';
 import '../providers/product_provider.dart';
 
@@ -36,7 +36,13 @@ class ProductItemWidget extends StatelessWidget {
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
               ),
-              onPressed: product.toogleFavorite,
+              onPressed: () async {
+                try {
+                  await product.toogleFavorite();
+                } catch (error) {
+                  DialogWidget.showErrorDialog(error: error, context: context);
+                }
+              },
               color: Theme.of(context).accentColor,
             ),
           ),
