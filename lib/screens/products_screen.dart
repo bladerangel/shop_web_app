@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/dialog_widget.dart' as DialogWidget;
-import '../widgets/loading_widget.dart';
+import '../widgets/future_loading_widget.dart';
 import '../providers/products_provider.dart';
 import '../widgets/drawer_widget.dart';
 import '../providers/cart_provider.dart';
@@ -21,23 +20,6 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   bool _showOnlyFavorites = false;
-  final _loading = GlobalKey<LoadingWidgetState>();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        _loading.currentState.showLoading();
-        await Provider.of<ProductsProvider>(context, listen: false)
-            .fetchProducts();
-      } catch (error) {
-        DialogWidget.showErrorDialog(error: error, context: context);
-      } finally {
-        _loading.currentState.closeLoading();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +75,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ],
       ),
       drawer: DrawerWidget(),
-      body: LoadingWidget(
-        key: _loading,
+      body: FutureLoadingWidget(
+        onAction: Provider.of<ProductsProvider>(context, listen: false)
+            .fetchProducts(),
         child: ProductsGridWidget(
           showOnlyFavorites: _showOnlyFavorites,
         ),

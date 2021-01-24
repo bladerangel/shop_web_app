@@ -48,7 +48,8 @@ class OrdersProvider with ChangeNotifier {
       final response = await _dio.get(_url);
       final List<dynamic> data = response.data;
       orders.clear();
-      orders.addAll(data.map((product) => OrderItem.fromJson(product)));
+      orders
+          .addAll(data.reversed.map((product) => OrderItem.fromJson(product)));
       notifyListeners();
     } catch (error) {
       throw error;

@@ -5,19 +5,23 @@ Future<T> showErrorDialog<T>({
   DioError error,
   BuildContext context,
 }) async =>
-    showDialog(
+    Future.delayed(
+      Duration.zero,
+      () => showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-              title: Text(
-                'An error occurred!',
-              ),
-              content: Text(
-                error.message,
-              ),
-              actions: [
-                FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(ctx).pop(),
-                ),
-              ],
-            ));
+          title: Text(
+            'An error occurred!',
+          ),
+          content: Text(
+            error.message,
+          ),
+          actions: [
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        ),
+      ),
+    );
