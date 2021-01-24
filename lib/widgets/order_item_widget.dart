@@ -51,7 +51,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
               ),
               height: min(widget.order.cart.itemCount * 20.0 + 10, 180),
               child: ListView(
-                children: widget.order.cart.items
+                children: widget.order.cart.cartItems
                     .map((item) => Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

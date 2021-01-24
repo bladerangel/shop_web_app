@@ -1,6 +1,10 @@
 import 'package:flutter/foundation.dart';
 import './product_provider.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'cart_provider.g.dart';
+
+@JsonSerializable()
 class CartItem {
   final int id;
   final ProductProvider product;
@@ -22,66 +26,73 @@ class CartItem {
         product: product ?? this.product,
         quantity: quantity ?? this.quantity,
       );
+
+  factory CartItem.fromJson(Map<String, dynamic> json) =>
+      _$CartItemFromJson(json);
+  Map<String, dynamic> toJson() => _$CartItemToJson(this);
 }
 
+@JsonSerializable()
 class CartProvider with ChangeNotifier {
-  CartProvider copy() {
-    CartProvider cartProvider = CartProvider();
-    cartProvider._items = items;
-    return cartProvider;
-  }
+  final List<CartItem> cartItems;
 
-  List<CartItem> _items = [];
+  CartProvider({
+    List<CartItem> cartItems,
+  }) : this.cartItems = cartItems ?? [];
 
-  List<CartItem> get items => [..._items];
+  factory CartProvider.fromJson(Map<String, dynamic> json) =>
+      _$CartProviderFromJson(json);
+  Map<String, dynamic> toJson() => _$CartProviderToJson(this);
 
-  int get itemCount => _items.length;
+  int get itemCount => cartItems.length;
 
-  double get totalAmount => _items.fold(
+  double get totalAmount => cartItems.fold(
       0.0,
       (previous, current) =>
           previous + current.product.price * current.quantity);
 
   void addItem(ProductProvider product) {
-    int index = _items.indexWhere((item) => item.product == product);
+    int index = cartItems.indexWhere((item) => item.product == product);
 
     if (index == -1) {
-      _items.add(
+      cartItems.add(
         CartItem(
-          id: DateTime.now().millisecondsSinceEpoch,
+          id: null,
           product: product,
           quantity: 1,
         ),
       );
     } else {
-      _items[index] = _items[index].copy(quantity: _items[index].quantity + 1);
+      cartItems[index] =
+          cartItems[index].copy(quantity: cartItems[index].quantity + 1);
     }
 
     notifyListeners();
   }
 
   void undoAddItem(ProductProvider product) {
-    int index = _items.indexWhere((item) => item.product == product);
+    int index = cartItems.indexWhere((item) => item.product == product);
     if (index == -1) {
       return;
     }
 
-    if (_items[index].quantity > 1) {
-      _items[index] = _items[index].copy(quantity: _items[index].quantity - 1);
+    if (cartItems[index].quantity > 1) {
+      cartItems[index] =
+          cartItems[index].copy(quantity: cartItems[index].quantity - 1);
     } else {
-      _items.remove(_items[index]);
+      cartItems.remove(cartItems[index]);
     }
 
     notifyListeners();
   }
 
   void removeItem(CartItem cartItem) {
-    _items.remove(cartItem);
+    cartItems.remove(cartItem);
     notifyListeners();
   }
 
   void clear() {
-    _items = [];
+    cartItems.clear();
     notifyListeners();
   }
 }

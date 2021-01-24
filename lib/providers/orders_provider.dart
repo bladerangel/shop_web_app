@@ -1,6 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import './cart_provider.dart';
 
+part 'orders_provider.g.dart';
+
+@JsonSerializable()
 class OrderItem {
   final int id;
   final CartProvider cart;
@@ -12,31 +17,41 @@ class OrderItem {
     @required this.dateTime,
   });
 
-  OrderItem copy({
-    int id,
-    CartProvider cart,
-    DateTime dateTime,
-  }) =>
-      OrderItem(
-        id: id ?? this.id,
-        cart: cart ?? this.cart,
-        dateTime: dateTime ?? this.dateTime,
-      );
+  factory OrderItem.fromJson(Map<String, dynamic> json) =>
+      _$OrderItemFromJson(json);
+  Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 }
 
 class OrdersProvider with ChangeNotifier {
-  List<OrderItem> _orders = [];
-  List<OrderItem> get orders => [..._orders];
+  final List<OrderItem> orders;
 
-  void addOrder(CartProvider cart) {
-    _orders.insert(
-      0,
-      OrderItem(
-        id: DateTime.now().millisecondsSinceEpoch,
-        cart: cart,
-        dateTime: DateTime.now(),
-      ),
+  OrdersProvider({
+    List<OrderItem> orders,
+  }) : this.orders = orders ?? [];
+
+  final Dio _dio = Dio();
+  final _url = 'http://localhost:8080/order';
+
+  Future<void> addOrder(CartProvider cart) async {
+    final order = OrderItem(
+      id: null,
+      cart: cart,
+      dateTime: DateTime.now(),
     );
+
+    await _dio.post(_url, data: order.toJson());
     notifyListeners();
+  }
+
+  Future<void> fetchOrders() async {
+    try {
+      final response = await _dio.get(_url);
+      final List<dynamic> data = response.data;
+      orders.clear();
+      orders.addAll(data.map((product) => OrderItem.fromJson(product)));
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }

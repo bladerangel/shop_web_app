@@ -43,7 +43,7 @@ class ProductProvider with ChangeNotifier {
       _$ProductProviderFromJson(json);
   Map<String, dynamic> toJson() => _$ProductProviderToJson(this);
 
-  Dio dio = Dio();
+  final Dio _dio = Dio();
 
   final _url = 'http://localhost:8080/product';
 
@@ -51,7 +51,7 @@ class ProductProvider with ChangeNotifier {
     try {
       final updatedProduct = this.copy(isFavorite: !isFavorite);
       final response =
-          await dio.put('$_url/$id', data: updatedProduct.toJson());
+          await _dio.put('$_url/$id', data: updatedProduct.toJson());
       final product = ProductProvider.fromJson(response.data);
       isFavorite = product.isFavorite;
       notifyListeners();

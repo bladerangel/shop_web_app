@@ -47,8 +47,8 @@ class CartScreen extends StatelessWidget {
                   FlatButton(
                     child: Text('Order Now'),
                     textColor: Theme.of(context).primaryColor,
-                    onPressed: () {
-                      orderProvider.addOrder(cartProvider.copy());
+                    onPressed: () async {
+                      await orderProvider.addOrder(cartProvider);
                       cartProvider.clear();
                     },
                   ),
@@ -61,7 +61,7 @@ class CartScreen extends StatelessWidget {
             child: ListView.builder(
               itemCount: cartProvider.itemCount,
               itemBuilder: (ctx, index) => CartItemWidget(
-                cartItem: cartProvider.items[index],
+                cartItem: cartProvider.cartItems[index],
               ),
             ),
           ),

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import './product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
-  List<ProductProvider> _products = [];
   /* [
     ProductProvider(
       id: 1,
@@ -39,13 +38,17 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];*/
 
-  Dio dio = Dio();
+  final List<ProductProvider> products;
+
+  final Dio _dio = Dio();
 
   final _url = 'http://localhost:8080/product';
 
-  List<ProductProvider> get products => [..._products];
+  ProductsProvider({
+    List<ProductProvider> products,
+  }) : this.products = products ?? [];
 
-  List<ProductProvider> get favoriteProducts => _products
+  List<ProductProvider> get favoriteProducts => products
       .where(
         (product) => product.isFavorite,
       )
@@ -53,10 +56,10 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await dio.get(_url);
+      final response = await _dio.get(_url);
       final List<dynamic> data = response.data;
-      _products =
-          data.map((product) => ProductProvider.fromJson(product)).toList();
+      products.clear();
+      products.addAll(data.map((product) => ProductProvider.fromJson(product)));
       notifyListeners();
     } catch (error) {
       throw error;
@@ -67,7 +70,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await dio.post(_url, data: product.toJson());
+      await _dio.post(_url, data: product.toJson());
       await fetchProducts();
     } catch (error) {
       throw error;
@@ -78,7 +81,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await dio.put('$_url/${product.id}', data: product.toJson());
+      await _dio.put('$_url/${product.id}', data: product.toJson());
       await fetchProducts();
     } catch (error) {
       throw error;
@@ -89,7 +92,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await dio.delete('$_url/${product.id}');
+      await _dio.delete('$_url/${product.id}');
       await fetchProducts();
     } catch (error) {
       throw error;
