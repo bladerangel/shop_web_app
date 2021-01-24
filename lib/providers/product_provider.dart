@@ -49,7 +49,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> toogleFavorite() async {
     try {
-      final updatedProduct = this.copy(isFavorite: !isFavorite);
+      final updatedProduct = copy(isFavorite: !isFavorite);
       final response =
           await _dio.put('$_url/$id', data: updatedProduct.toJson());
       final product = ProductProvider.fromJson(response.data);
