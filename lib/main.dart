@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import './providers/auth_provider.dart';
+import './screens/auth_screen.dart';
 import './screens/manage_edit_product_screen.dart';
 import './screens/manage_products_screen.dart';
 import './screens/orders_screen.dart';
@@ -18,6 +20,9 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
+          value: AuthProvider(),
+        ),
+        ChangeNotifierProvider.value(
           value: ProductsProvider(),
         ),
         ChangeNotifierProvider.value(
@@ -27,20 +32,24 @@ class App extends StatelessWidget {
           value: OrdersProvider(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Shop Web App',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato',
-        ),
-        home: ProductsScreen(),
-        routes: {
-          ProductDetailScreen.route: (ctx) => ProductDetailScreen(),
-          CartScreen.route: (ctx) => CartScreen(),
-          OrderScreen.route: (ctx) => OrderScreen(),
-          ManageProductsScreen.route: (ctx) => ManageProductsScreen(),
-          ManageEditProductScreen.route: (ctx) => ManageEditProductScreen(),
+      child: Consumer<AuthProvider>(
+        builder: (ctx, auth, child) {
+          return MaterialApp(
+            title: 'Shop Web App',
+            theme: ThemeData(
+              primarySwatch: Colors.purple,
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato',
+            ),
+            home: auth.isAuth ? ProductsScreen() : AuthScreen(),
+            routes: {
+              ProductDetailScreen.route: (ctx) => ProductDetailScreen(),
+              CartScreen.route: (ctx) => CartScreen(),
+              OrderScreen.route: (ctx) => OrderScreen(),
+              ManageProductsScreen.route: (ctx) => ManageProductsScreen(),
+              ManageEditProductScreen.route: (ctx) => ManageEditProductScreen(),
+            },
+          );
         },
       ),
     );
