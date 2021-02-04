@@ -97,7 +97,7 @@ class AuthProvider with ChangeNotifier {
 
   final _httpRequest = HttpProvider.instance.client;
 
-  final _url = 'http://localhost:8080/user';
+  final _url = '/user';
 
   Future<void> signup(User auth) async {
     try {

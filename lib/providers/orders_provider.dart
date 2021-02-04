@@ -32,7 +32,7 @@ class OrdersProvider with ChangeNotifier {
   }) : _orders = orders ?? [];
 
   final _httpRequest = HttpProvider.instance.client;
-  final _url = 'http://localhost:8080/order';
+  final _url = '/order';
 
   Future<void> addOrder(CartProvider cart) async {
     final order = OrderItem(
