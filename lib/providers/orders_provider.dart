@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import './http_provider.dart';
 import './cart_provider.dart';
 
 part 'orders_provider.g.dart';
@@ -23,13 +23,15 @@ class OrderItem {
 }
 
 class OrdersProvider with ChangeNotifier {
-  final List<OrderItem> orders;
+  List<OrderItem> _orders;
+
+  List<OrderItem> get orders => [..._orders];
 
   OrdersProvider({
     List<OrderItem> orders,
-  }) : this.orders = orders ?? [];
+  }) : _orders = orders ?? [];
 
-  final Dio _dio = Dio();
+  final _httpRequest = HttpProvider.instance.client;
   final _url = 'http://localhost:8080/order';
 
   Future<void> addOrder(CartProvider cart) async {
@@ -38,18 +40,16 @@ class OrdersProvider with ChangeNotifier {
       cart: cart,
       dateTime: DateTime.now(),
     );
-
-    await _dio.post(_url, data: order.toJson());
+    await _httpRequest.post(_url, data: order.toJson());
     notifyListeners();
   }
 
   Future<void> fetchOrders() async {
     try {
-      final response = await _dio.get(_url);
+      final response = await _httpRequest.get(_url);
       final List<dynamic> data = response.data;
-      orders.clear();
-      orders
-          .addAll(data.reversed.map((product) => OrderItem.fromJson(product)));
+      print(data);
+      _orders = data.map((product) => OrderItem.fromJson(product)).toList();
       notifyListeners();
     } catch (error) {
       throw error;

@@ -14,6 +14,7 @@ enum MenuOptions {
 }
 
 class ProductsScreen extends StatefulWidget {
+  static const route = '/products';
   @override
   _ProductsScreenState createState() => _ProductsScreenState();
 }

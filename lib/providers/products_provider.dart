@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import './http_provider.dart';
 import './product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
@@ -38,15 +38,17 @@ class ProductsProvider with ChangeNotifier {
     ),
   ];*/
 
-  final List<ProductProvider> products;
+  List<ProductProvider> _products;
 
-  final Dio _dio = Dio();
-
-  final _url = 'http://localhost:8080/product';
+  List<ProductProvider> get products => [..._products];
 
   ProductsProvider({
     List<ProductProvider> products,
-  }) : this.products = products ?? [];
+  }) : _products = products ?? [];
+
+  final _httpRequest = HttpProvider.instance.client;
+
+  final _url = 'http://localhost:8080/product';
 
   List<ProductProvider> get favoriteProducts => products
       .where(
@@ -56,12 +58,30 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> fetchProducts() async {
     try {
-      final response = await _dio.get(_url);
+      var response = await _httpRequest.get(_url);
       final List<dynamic> data = response.data;
-      products.clear();
-      products.addAll(data.map((product) => ProductProvider.fromJson(product)));
+      final List<ProductProvider> allProducts =
+          data.map((product) => ProductProvider.fromJson(product)).toList();
+
+      response = await _httpRequest.get('$_url/favorite');
+
+      final List<dynamic> favoriteData = response.data;
+      final List<ProductProvider> allFavoriteProducts = favoriteData
+          .map((product) => ProductProvider.fromJson(product))
+          .toList();
+
+      _products = allProducts.map((product) {
+        product = product.copy(
+            isFavorite: allFavoriteProducts.firstWhere(
+                    (favorite) => favorite.id == product.id,
+                    orElse: () => null) !=
+                null);
+        return product;
+      }).toList();
+
       notifyListeners();
     } catch (error) {
+      print(error);
       throw error;
     }
   }
@@ -70,7 +90,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await _dio.post(_url, data: product.toJson());
+      await _httpRequest.post(_url, data: product.toJson());
       await fetchProducts();
     } catch (error) {
       throw error;
@@ -81,7 +101,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await _dio.put('$_url/${product.id}', data: product.toJson());
+      await _httpRequest.put('$_url/${product.id}', data: product.toJson());
       await fetchProducts();
     } catch (error) {
       throw error;
@@ -92,7 +112,7 @@ class ProductsProvider with ChangeNotifier {
     ProductProvider product,
   ) async {
     try {
-      await _dio.delete('$_url/${product.id}');
+      await _httpRequest.delete('$_url/${product.id}');
       await fetchProducts();
     } catch (error) {
       throw error;

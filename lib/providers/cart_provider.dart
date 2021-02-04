@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
-import './product_provider.dart';
 import 'package:json_annotation/json_annotation.dart';
-
+import './product_provider.dart';
 part 'cart_provider.g.dart';
 
 @JsonSerializable()
@@ -34,28 +33,29 @@ class CartItem {
 
 @JsonSerializable()
 class CartProvider with ChangeNotifier {
-  final List<CartItem> cartItems;
+  List<CartItem> _cartItems;
+
+  List<CartItem> get cartItems => [..._cartItems];
 
   CartProvider({
     List<CartItem> cartItems,
-  }) : this.cartItems = cartItems ?? [];
+  }) : _cartItems = cartItems ?? [];
 
   factory CartProvider.fromJson(Map<String, dynamic> json) =>
       _$CartProviderFromJson(json);
   Map<String, dynamic> toJson() => _$CartProviderToJson(this);
 
-  int get itemCount => cartItems.length;
+  int get itemCount => _cartItems.length;
 
-  double get totalAmount => cartItems.fold(
+  double get totalAmount => _cartItems.fold(
       0.0,
       (previous, current) =>
           previous + current.product.price * current.quantity);
 
   void addItem(ProductProvider product) {
-    int index = cartItems.indexWhere((item) => item.product == product);
-
+    int index = _cartItems.indexWhere((item) => item.product == product);
     if (index == -1) {
-      cartItems.add(
+      _cartItems.add(
         CartItem(
           id: null,
           product: product,
@@ -63,36 +63,36 @@ class CartProvider with ChangeNotifier {
         ),
       );
     } else {
-      cartItems[index] =
-          cartItems[index].copy(quantity: cartItems[index].quantity + 1);
+      _cartItems[index] =
+          _cartItems[index].copy(quantity: _cartItems[index].quantity + 1);
     }
 
     notifyListeners();
   }
 
   void undoAddItem(ProductProvider product) {
-    int index = cartItems.indexWhere((item) => item.product == product);
+    int index = _cartItems.indexWhere((item) => item.product == product);
     if (index == -1) {
       return;
     }
 
-    if (cartItems[index].quantity > 1) {
-      cartItems[index] =
-          cartItems[index].copy(quantity: cartItems[index].quantity - 1);
+    if (_cartItems[index].quantity > 1) {
+      _cartItems[index] =
+          _cartItems[index].copy(quantity: _cartItems[index].quantity - 1);
     } else {
-      cartItems.remove(cartItems[index]);
+      _cartItems.remove(_cartItems[index]);
     }
 
     notifyListeners();
   }
 
   void removeItem(CartItem cartItem) {
-    cartItems.remove(cartItem);
+    _cartItems.remove(cartItem);
     notifyListeners();
   }
 
   void clear() {
-    cartItems.clear();
+    _cartItems.clear();
     notifyListeners();
   }
 }
