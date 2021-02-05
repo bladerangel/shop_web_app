@@ -91,6 +91,9 @@ class AuthProvider with ChangeNotifier {
 
   bool get isAuth => _token != null;
 
+  bool get isAdmin =>
+      _user.roles.map((role) => role.name).contains(RoleName.ROLE_ADMIN);
+
   factory AuthProvider.fromJson(Map<String, dynamic> json) =>
       _$AuthProviderFromJson(json);
   Map<String, dynamic> toJson() => _$AuthProviderToJson(this);

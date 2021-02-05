@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_web_app/providers/auth_provider.dart';
 import '../screens/manage_products_screen.dart';
 import '../screens/orders_screen.dart';
 
@@ -25,12 +27,20 @@ class DrawerWidget extends StatelessWidget {
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed(OrderScreen.route),
           ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Manage Products'),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(ManageProductsScreen.route),
+          Consumer<AuthProvider>(
+            builder: (ctx, auth, child) => auth.isAdmin
+                ? Column(
+                    children: [
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.edit),
+                        title: Text('Manage Products'),
+                        onTap: () => Navigator.of(context)
+                            .pushReplacementNamed(ManageProductsScreen.route),
+                      ),
+                    ],
+                  )
+                : Container(),
           ),
         ],
       ),

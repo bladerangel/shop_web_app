@@ -125,6 +125,7 @@ class _AuthCardWidgetState extends State<AuthCardWidget> {
                 ),
                 LoadingWidget(
                   key: _loading,
+                  visibleOpacity: false,
                   child: RaisedButton(
                     child:
                         Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
