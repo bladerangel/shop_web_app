@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_web_app/providers/auth_provider.dart';
+import '../providers/auth_provider.dart';
 import '../screens/manage_products_screen.dart';
 import '../screens/orders_screen.dart';
 
@@ -42,6 +42,14 @@ class DrawerWidget extends StatelessWidget {
                   )
                 : Container(),
           ),
+          Divider(),
+          ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+                Navigator.of(context).pushReplacementNamed('/');
+              }),
         ],
       ),
     );

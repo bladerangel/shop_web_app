@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import './http_provider.dart';
@@ -65,6 +67,7 @@ class AuthProvider with ChangeNotifier {
   User _user;
   String _token;
   DateTime _expiryDate;
+  Timer _authTimer;
 
   AuthProvider({
     User user,
@@ -91,8 +94,9 @@ class AuthProvider with ChangeNotifier {
 
   bool get isAuth => _token != null;
 
-  bool get isAdmin =>
-      _user.roles.map((role) => role.name).contains(RoleName.ROLE_ADMIN);
+  bool get isAdmin => _user != null
+      ? _user.roles.map((role) => role.name).contains(RoleName.ROLE_ADMIN)
+      : false;
 
   factory AuthProvider.fromJson(Map<String, dynamic> json) =>
       _$AuthProviderFromJson(json);
@@ -105,16 +109,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> signup(User auth) async {
     try {
       await _httpRequest.post('$_url/signup', data: auth.toJson());
-      final response =
-          await _httpRequest.post('$_url/signin', data: auth.toJson());
-      final authResponse = AuthProvider.fromJson(response.data);
-      _user = authResponse.user;
-      _token = authResponse.token;
-      _expiryDate = authResponse.expiryDate;
-
-      AuthStoreProvider.instance.auth = this;
-
-      notifyListeners();
+      await login(auth);
     } catch (error) {
       throw error;
     }
@@ -130,10 +125,36 @@ class AuthProvider with ChangeNotifier {
       _expiryDate = authResponse.expiryDate;
 
       AuthStoreProvider.instance.auth = this;
+      _autoLogout();
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      _user = null;
+      _token = null;
+      _expiryDate = null;
+
+      AuthStoreProvider.instance.auth = this;
+      if (_authTimer != null) {
+        _authTimer.cancel();
+        _authTimer = null;
+      }
 
       notifyListeners();
     } catch (error) {
       throw error;
     }
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    final timeToExpiry = _expiryDate.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timeToExpiry), logout);
   }
 }

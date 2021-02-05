@@ -48,7 +48,6 @@ class OrdersProvider with ChangeNotifier {
     try {
       final response = await _httpRequest.get(_url);
       final List<dynamic> data = response.data;
-      print(data);
       _orders = data.map((product) => OrderItem.fromJson(product)).toList();
       notifyListeners();
     } catch (error) {
