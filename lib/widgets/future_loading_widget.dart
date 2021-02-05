@@ -4,11 +4,13 @@ import '../widgets/dialog_widget.dart' as DialogWidget;
 class FutureLoadingWidget extends StatelessWidget {
   final Widget child;
   final Future<dynamic> onAction;
+  final bool visibleOpacity;
 
   const FutureLoadingWidget({
     Key key,
     @required this.child,
     @required this.onAction,
+    this.visibleOpacity = true,
   }) : super(key: key);
 
   @override
@@ -22,7 +24,7 @@ class FutureLoadingWidget extends StatelessWidget {
             children: [
               Opacity(
                 opacity: snapshot.connectionState == ConnectionState.waiting
-                    ? 0.5
+                    ? (visibleOpacity ? 0.5 : 0)
                     : 1,
                 child: AbsorbPointer(
                   absorbing:
