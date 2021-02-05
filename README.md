@@ -1,16 +1,19 @@
-# shop_web_app
+# Shop Web App
 
-A new Flutter project.
+## 1) Live App
+https://bladerangel.github.io/shop_web_app
 
-## Getting Started
+## 2) Build Web
+**Obs: After build change base url to /shop_web_app/ in index.html**
 
-This project is a starting point for a Flutter application.
+## 3) Screenshots
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<div>
+<img src="readme_images/0.png" width="200" />
+<img src="readme_images/1.png" width="200" />
+<img src="readme_images/2.png" width="200" />
+<img src="readme_images/3.png" width="200" />
+<img src="readme_images/4.png" width="200" />
+<img src="readme_images/5.png" width="200" />
+<img src="readme_images/6.png" width="200" />
+</div>
