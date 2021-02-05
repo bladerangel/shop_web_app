@@ -11,7 +11,7 @@ class HttpProvider {
   static final HttpProvider _instance = HttpProvider._();
 
   HttpProvider._() {
-    _client.options.baseUrl = 'http://localhost:8080';
+    _client.options.baseUrl = 'https://shopbackendspringboot.herokuapp.com';
     _client.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       final authStoreProvider = AuthStoreProvider.instance;
