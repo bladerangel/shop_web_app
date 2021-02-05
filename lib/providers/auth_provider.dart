@@ -102,7 +102,8 @@ class AuthProvider with ChangeNotifier {
   Future<void> signup(User auth) async {
     try {
       await _httpRequest.post('$_url/signup', data: auth.toJson());
-      final response = await _httpRequest.post('$_url/signin', data: toJson());
+      final response =
+          await _httpRequest.post('$_url/signin', data: auth.toJson());
       final authResponse = AuthProvider.fromJson(response.data);
       _user = authResponse.user;
       _token = authResponse.token;
