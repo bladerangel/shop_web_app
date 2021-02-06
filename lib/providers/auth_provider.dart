@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './http_provider.dart';
 
 part 'auth_provider.g.dart';
@@ -124,12 +126,33 @@ class AuthProvider with ChangeNotifier {
       _token = authResponse.token;
       _expiryDate = authResponse.expiryDate;
 
-      AuthStoreProvider.instance.auth = this;
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('auth', jsonEncode(toJson()));
+
       _autoLogout();
       notifyListeners();
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('auth')) {
+      return false;
+    }
+    final Map<String, dynamic> authData = jsonDecode(prefs.getString('auth'));
+    final auth = AuthProvider.fromJson(authData);
+    if (auth.expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _user = auth.user;
+    _token = auth.token;
+    _expiryDate = auth.expiryDate;
+
+    _autoLogout();
+    notifyListeners();
+    return true;
   }
 
   Future<void> logout() async {
@@ -138,12 +161,12 @@ class AuthProvider with ChangeNotifier {
       _token = null;
       _expiryDate = null;
 
-      AuthStoreProvider.instance.auth = this;
       if (_authTimer != null) {
         _authTimer.cancel();
         _authTimer = null;
       }
-
+      final prefs = await SharedPreferences.getInstance();
+      prefs.clear();
       notifyListeners();
     } catch (error) {
       throw error;

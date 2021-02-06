@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shop_web_app/providers/auth_provider.dart';
 
 class HttpProvider {
@@ -14,12 +17,16 @@ class HttpProvider {
     _client.options.baseUrl = 'https://shopbackendspringboot.herokuapp.com';
     _client.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-      final authStoreProvider = AuthStoreProvider.instance;
-
-      if (authStoreProvider.auth?.isAuth == true) {
-        options.headers["Authorization"] =
-            'Bearer ${authStoreProvider.auth.token}';
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey('auth')) {
+        final Map<String, dynamic> authData =
+            jsonDecode(prefs.getString('auth'));
+        final auth = AuthProvider.fromJson(authData);
+        if (auth.isAuth) {
+          options.headers["Authorization"] = 'Bearer ${auth.token}';
+        }
       }
+
       return options;
     }, onResponse: (Response response) {
       return response;
@@ -27,10 +34,4 @@ class HttpProvider {
       return error;
     }));
   }
-}
-
-class AuthStoreProvider {
-  AuthProvider auth;
-  static final AuthStoreProvider instance = AuthStoreProvider._();
-  AuthStoreProvider._();
 }
