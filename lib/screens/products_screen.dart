@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../widgets/future_loading_widget.dart';
 import '../providers/products_provider.dart';
 import '../widgets/drawer_widget.dart';
 import '../providers/cart_provider.dart';
-import '../screens/cart_screen.dart';
+import './cart_screen.dart';
 import '../widgets/badge_widget.dart';
 import '../widgets/products_grid_widget.dart';
 

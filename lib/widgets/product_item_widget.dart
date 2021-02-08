@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_web_app/providers/products_provider.dart';
-import 'package:shop_web_app/widgets/loading_widget.dart';
+
+import '../providers/products_provider.dart';
+import './loading_widget.dart';
 import '../providers/cart_provider.dart';
-import '../widgets/dialog_widget.dart' as DialogWidget;
+import './dialog_widget.dart' as DialogWidget;
 import '../screens/product_detail_screen.dart';
 import '../providers/product_provider.dart';
 

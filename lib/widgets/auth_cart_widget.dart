@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/auth_provider.dart';
-import '../widgets/loading_widget.dart';
-import '../widgets/dialog_widget.dart' as DialogWidget;
+import './loading_widget.dart';
+import './dialog_widget.dart' as DialogWidget;
 
 enum AuthMode { Signup, Login }
 

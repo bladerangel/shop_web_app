@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shop_web_app/providers/auth_provider.dart';
+import './auth_provider.dart';
 
 class HttpProvider {
   final Dio _client = Dio();

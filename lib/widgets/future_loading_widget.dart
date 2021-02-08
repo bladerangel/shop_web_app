@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/dialog_widget.dart' as DialogWidget;
+
+import './dialog_widget.dart' as DialogWidget;
 
 class FutureLoadingWidget extends StatelessWidget {
   final Widget child;
