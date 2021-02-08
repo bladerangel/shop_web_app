@@ -47,7 +47,7 @@ class ProductProvider with ChangeNotifier {
 
   final _httpRequest = HttpProvider.instance.client;
 
-  final _url = 'http://localhost:8080/product';
+  final _url = '/product';
 
   Future<void> toogleFavorite() async {
     try {

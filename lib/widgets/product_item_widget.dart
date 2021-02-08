@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_web_app/providers/products_provider.dart';
 import 'package:shop_web_app/widgets/loading_widget.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/dialog_widget.dart' as DialogWidget;
@@ -45,6 +46,8 @@ class ProductItemWidget extends StatelessWidget {
                   try {
                     _loading.currentState.showLoading();
                     await product.toogleFavorite();
+                    await Provider.of<ProductsProvider>(context, listen: false)
+                        .fetchProducts();
                   } catch (error) {
                     DialogWidget.showErrorDialog(
                         error: error, context: context);
